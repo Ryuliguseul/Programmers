@@ -1,0 +1,20 @@
+def solution(n, times):
+    times.sort()
+    left, right = 0, times[-1]*n
+
+    while(left <= right):
+        mid, sum = (left+right)//2, 0
+
+        for i in times:
+            sum += mid//i
+
+        if sum >= n:
+            right = mid-1
+        else:
+            if left==right:
+                return mid+1
+            left = mid+1
+
+    return mid
+
+#https://yupttuk.tistory.com/359
