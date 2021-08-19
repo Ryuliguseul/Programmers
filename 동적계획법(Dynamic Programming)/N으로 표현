@@ -1,0 +1,22 @@
+def solution(N, number):
+    
+    arr = [[] for i in range(10)]
+    nn = ''
+    for i in range(8):
+        nn += str(N)
+        arr[i].append(int(nn))
+        for j in range(i):
+            for k in arr[j]:
+                for l in arr[i-j-1]:
+                    arr[i].append(k + l)
+                    arr[i].append(k - l)
+                    arr[i].append(k * l)
+                    if l != 0:
+                        arr[i].append(k // l)
+        arr[i] = list(set(arr[i]))
+        if number in arr[i]:
+            return i+1
+    
+    return -1
+   
+#https://yupttuk.tistory.com/357
