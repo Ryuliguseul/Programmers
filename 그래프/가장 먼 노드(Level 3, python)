@@ -1,0 +1,38 @@
+import heapq
+
+def solution(n, edge):
+    #최단거리 테이블(1번부터 사용)
+    distance = [float("inf")]*(n+1)
+    distance[0] = 0
+    #인접행렬 생성
+    graph = [[] for i in range(n+1)]
+    for i in edge:
+        graph[i[0]].append(i[1])
+        graph[i[1]].append(i[0])
+
+    dijkstra(distance, graph)
+
+    return distance.count(max(distance))
+
+
+def dijkstra(distance, graph):
+    q = []
+    #시작 노드 -> 1번
+    heapq.heappush(q, (0, 1))
+    distance[1] = 0
+
+    while q:
+        #최단거리 가장 짧은 노드
+        dist, now = heapq.heappop(q)
+        #방문 여부 확인
+        if distance[now] < dist:
+            continue
+        #인접 노드 방문
+        for i in graph[now]:
+            cost = dist + 1
+            #해당 경로가 더 빠른 경우
+            if cost < distance[i]:
+                distance[i] = cost
+                heapq.heappush(q, (cost, i))
+
+#https://yupttuk.tistory.com/358
