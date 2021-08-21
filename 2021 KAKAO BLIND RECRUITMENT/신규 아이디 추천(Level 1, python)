@@ -1,0 +1,28 @@
+import re
+def solution(new_id):
+    #사용 가능한 문자
+    characters = "abcdefghijklmnopqrstuvwxyz0123456789-_."
+
+    #1step
+    new_id = new_id.lower()
+    #2step
+    new_id = re.sub('[^a-z0-9-_.]', '', new_id)
+    #3step
+    new_id = re.sub('(([.])\\2{1,})', '.', new_id)
+    #4step & 5step
+    if new_id[0] == '.':    new_id = new_id[1:]
+    if not new_id:  
+        new_id = "a"
+    else:
+        if new_id[-1] == '.':   new_id = new_id[:-1]
+    #6step
+    if len(new_id)>=16:
+        new_id = new_id[:15]
+        if new_id[-1] == '.':   new_id = new_id[:-1]
+    #7step
+    while len(new_id)<=2:
+        new_id += new_id[-1]
+
+    return new_id
+    
+# yupttuk.tistory.com/360
