@@ -1,0 +1,51 @@
+from collections import defaultdict
+
+def solution(info, query):
+    answer = []
+    group = defaultdict(list)
+
+    #점수를 제외한 값을 key, 점수 리스트를 value로 group생성
+    for i in range(len(info)):
+        tmp = info[i].split(' ')
+        group[tmp[0]+tmp[1]+tmp[2]+tmp[3]].append(int(tmp[4]))
+        group['-'+tmp[1]+tmp[2]+tmp[3]].append(int(tmp[4]))
+        group['-'+'-'+tmp[2]+tmp[3]].append(int(tmp[4]))
+        group['-'+tmp[1]+'-'+tmp[3]].append(int(tmp[4]))
+        group['-'+tmp[1]+tmp[2]+'-'].append(int(tmp[4]))
+        group['-'+'-'+'-'+tmp[3]].append(int(tmp[4]))
+        group['-'+'-'+tmp[2]+'-'].append(int(tmp[4]))
+        group['-'+tmp[1]+'-'+'-'].append(int(tmp[4]))
+        group['-'+'-'+'-'+'-'].append(int(tmp[4]))
+        group[tmp[0]+'-'+tmp[2]+tmp[3]].append(int(tmp[4]))
+        group[tmp[0]+'-'+'-'+tmp[3]].append(int(tmp[4]))
+        group[tmp[0]+'-'+'-'+'-'].append(int(tmp[4]))
+        group[tmp[0]+'-'+tmp[2]+'-'].append(int(tmp[4]))
+        group[tmp[0]+tmp[1]+'-'+tmp[3]].append(int(tmp[4]))
+        group[tmp[0]+tmp[1]+'-'+'-'].append(int(tmp[4]))
+        group[tmp[0]+tmp[1]+tmp[2]+'-'].append(int(tmp[4]))
+
+    for value in group.values():
+        value.sort()
+    #group의 key에서 해당 query가 있는지 확인 후 이진 탐색으로 인원수세기
+    for i in range(len(query)):
+        query[i] = [i for i in query[i].split() if i != 'and']
+        q_key = query[i][0]+query[i][1]+query[i][2]+query[i][3]
+        q_score = int(query[i][4])
+        if q_key in group:
+            i_score = group[q_key]
+            left, right, target = 0, len(i_score)-1, q_score
+            if i_score[-1] >= q_score:
+                while(left < right):
+                    mid = (left+right)//2
+                    if target <= i_score[mid]:
+                       right = mid
+                    else:
+                      left = mid+1
+                answer.append(len(group[q_key]) - right)
+            else:   
+                answer.append(0)
+        else:
+            answer.append(0)
+    return answer
+    
+# https://yupttuk.tistory.com/362
