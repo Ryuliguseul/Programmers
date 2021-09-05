@@ -1,0 +1,40 @@
+import heapq
+
+def dijkstra(graph, s):
+    distances = {node: float('inf') for node in graph}  # 최단 거리 리스트
+    distances[s], queue = 0, []
+    heapq.heappush(queue, [distances[s], s])  # 시작 노드 큐에 push
+
+    # dijkstra
+    while queue:
+        c_dis, c_des = heapq.heappop(queue)
+        if distances[c_des] < c_dis:
+            continue
+        for n_des, n_dis in graph[c_des].items():
+            distance = c_dis + n_dis
+            if distance < distances[n_des]:
+                distances[n_des] = distance
+                heapq.heappush(queue, [distance, n_des])
+
+    return distances
+
+
+def solution(n, s, a, b, fares):
+    graph = {}
+    for n1, n2, w in fares:
+        graph.setdefault(n1, {})[n2] = w
+        graph.setdefault(n2, {})[n1] = w
+
+    # 합승했을 때 최소 요금
+    to_distances = dijkstra(graph, s)
+    cost_list = [to_distances[a] + to_distances[b]]
+
+    # 합승이 끝난 후 각자의 최소 요금
+    for key, value in to_distances.items():
+        if key == s: continue
+        al_distances = dijkstra(graph, key)
+        cost_list.append(al_distances[a] + al_distances[b] + value)
+
+    return min(cost_list)
+    
+#https://yupttuk.tistory.com/363
