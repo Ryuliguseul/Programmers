@@ -1,0 +1,38 @@
+def time2second(time):
+    time = time.split(':')
+    return ((int(time[0]) * 60) + int(time[1]))*60 + int(time[2])
+
+def solution(play_time, adv_time, logs):
+
+    play_time = time2second(play_time)
+    adv_time = time2second(adv_time)
+    cct = [0 for i in range(play_time+1)]
+
+    #second 단위로 변환
+    for i in range(len(logs)):
+        time = logs[i].split('-')
+        s = time2second(time[0])
+        e = time2second(time[1])
+        cct[s] += 1
+        cct[e] -= 1
+    
+    if play_time == adv_time: return "00:00:00"
+    
+    #누적 시간 계산
+    for i in range(1, len(cct)):
+        cct[i] += cct[i-1]
+    for i in range(1, len(cct)):
+        cct[i] += cct[i-1]
+
+    #최대 누적 재생시간 구하기
+    maxx, insert = cct[adv_time-1], 0
+    for i in range(1, play_time - adv_time + 2):
+        tmp = cct[i+adv_time-1] - cct[i-1]
+        if maxx < tmp: 
+            maxx, insert = tmp, i    
+
+    h, m, s = str(insert//3600).rjust(2,'0'), str((insert%3600)//60).rjust(2,'0'), str((insert%3600)%60).rjust(2,'0')
+
+    return ':'.join([h,m,s])
+    
+# https://yupttuk.tistory.com/372
